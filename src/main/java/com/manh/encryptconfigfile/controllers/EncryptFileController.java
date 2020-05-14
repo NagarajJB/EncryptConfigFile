@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,13 +42,12 @@ public class EncryptFileController {
 	private TripleDESUtil tripleDESUtil;
 
 	@GetMapping("/downloadSample")
-	public ResponseEntity<ByteArrayResource> getSampleConfigJsonFile(HttpServletResponse response) throws IOException {
-		File sampleFile = ResourceUtils.getFile("classpath:sample_config.json");
-		Path path = Paths.get(sampleFile.getAbsolutePath());
-		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
-		return ResponseEntity.ok().contentLength(sampleFile.length())
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + sampleFile.getName() + "\"")
-				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
+	public ResponseEntity<ClassPathResource> getSampleConfigJsonFile(HttpServletResponse response) throws IOException {
+		ClassPathResource resource = new ClassPathResource("sample_config.json");
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "sample_config.json" + "\"")
+				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
 
 	@PostMapping("/encryptJsonFile")
