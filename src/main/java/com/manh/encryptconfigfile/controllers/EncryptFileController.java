@@ -1,7 +1,12 @@
 package com.manh.encryptconfigfile.controllers;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -11,7 +16,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,34 +32,37 @@ import com.manh.encryptconfigfile.utils.JSONUtils;
 import com.manh.encryptconfigfile.utils.TripleDESUtil;
 
 @RestController
-@RequestMapping("/encrypt")
+@RequestMapping("/file")
 public class EncryptFileController {
 
 	@Autowired
 	private TripleDESUtil tripleDESUtil;
 
-	@PostMapping("/jsonFile")
-	public void encryptFileAndDownload(Model model, @RequestParam("file") MultipartFile file,
-			HttpServletResponse response) throws IOException, InvalidKeyException, NoSuchAlgorithmException,
-			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+	@GetMapping("/downloadSample")
+	public ResponseEntity<ByteArrayResource> getSampleConfigJsonFile(HttpServletResponse response) throws IOException {
+		File sampleFile = ResourceUtils.getFile("classpath:sample_config.json");
+		Path path = Paths.get(sampleFile.getAbsolutePath());
+		ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+		return ResponseEntity.ok().contentLength(sampleFile.length())
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + sampleFile.getName() + "\"")
+				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
+	}
+
+	@PostMapping("/encryptJsonFile")
+	public ResponseEntity<ByteArrayResource> encryptFileAndDownload(@RequestParam("file") MultipartFile file)
+			throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException {
 
 		String contentAsJson = new String(file.getBytes(), StandardCharsets.UTF_8);
-		System.out.println(contentAsJson);
-
 		if (JSONUtils.isJSONValid(contentAsJson)) {
 			String encryptedContent = tripleDESUtil.harden(contentAsJson);
-			System.out.println(encryptedContent);
-
 			String fileName = "encrypted_config.txt";
-			response.setContentType("text/plain");
-			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-
-			response.setContentLength(encryptedContent.length());
-			response.getWriter().write(encryptedContent);
+			ByteArrayResource resource = new ByteArrayResource(encryptedContent.getBytes(Charset.forName("UTF-8")));
+			return ResponseEntity.ok().contentLength(encryptedContent.length())
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+					.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 		} else {
 			throw new IllegalArgumentException("Not a valid json file input..");
 		}
-
 	}
-
 }

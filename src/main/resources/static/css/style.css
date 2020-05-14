@@ -42,7 +42,7 @@ h1 {
 
 .form-container {
 	margin-top: 30px;
-/* 	background-color: #84848463; */
+	/* 	background-color: #84848463; */
 	background-color: #137d7d36;
 	padding: 40px;
 	border-radius: 10px;
@@ -50,6 +50,10 @@ h1 {
 
 .file-row {
 	justify-content: center;
+}
+
+.sample-file-download {
+	margin-bottom: 20px;
 }
 
 .submit-button {
