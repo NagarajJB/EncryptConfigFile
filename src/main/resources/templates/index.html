@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Encrypt Configuration File</title>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/4.4.1-1/css/bootstrap.min.css} " />
+<link
+	href="https://fonts.googleapis.com/css?family=Lato:100,300,300i,400&display=swap"
+	rel="stylesheet" />
+
+<style>
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html, body {
+	background-color: #fff;
+	color: #d5d5d5;
+	font-family: "Lato", "Arial", sans-serif;
+	font-size: 20px;
+	font-weight: 300;
+	text-rendering: optimizeLegibility;
+	overflow-x: hidden;
+}
+
+header {
+	background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+		url(../images/background.jpg);
+	background-size: cover;
+	background-position: center;
+	height: 100vh;
+	background-attachment: fixed;
+}
+
+.hero-text-box {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+h1 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	color: #fff;
+	font-size: 250%;
+	word-spacing: 4px;
+	letter-spacing: 1px;
+	font-weight: 300;
+}
+
+.form-container {
+	margin-top: 50px;
+	background-color: #305e9363;
+	padding: 50px;
+	border-radius: 10px;
+}
+
+.file-row {
+	display: flex;
+	justify-content: center;
+}
+
+.file-row .label-col {
+	flex: 0 0 30%;
+	font-size: 90%;
+	margin-right: 20px;
+}
+
+.submit-button {
+	margin-left: 20px;
+}
+
+</style>
+
+<script>
+	$(document).ready(function() {
+		$('#btnUploadFile').attr("disabled", true);
+		$("#customFile").change(function() {
+			var fileName = $(this).val().replace(/C:\\fakepath\\/i, '');
+
+			var ext = fileName.split('.').pop().toLowerCase();
+			if (ext == 'json') {
+				$("#customFileHolder").val(fileName);
+				$('#btnUploadFile').removeAttr("disabled");
+			}
+		});
+
+	});
+</script>
+
+
+
+</head>
+<body>
+	<header>
+		<div class="hero-text-box">
+			<h1>Upload config.json and download the encrypted file&hellip;</h1>
+			<div class="form-container">
+				<form method="post" action="encrypt/file" class="file-upload-form"
+					enctype="multipart/form-data">
+					<div class="file-row row">
+						<div class="row text-left">
+							<div class="col input-group">
+								<label class="input-group-btn"> <span
+									class="btn btn-primary"> Browse&hellip; <input
+										type="file" name="file" accept=".json" id="customFile"
+										style="display: none;" />
+								</span>
+								</label> <input type="text" class="form-control" id="customFileHolder"
+									readonly />
+								<div class="submit-button">
+									<input type="submit" value="Encrypt" class="btn btn-danger">
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div th:if="${errorMessage}">
+				<div th:text="${errorMessage}"></div>
+			</div>
+		</div>
+
+	</header>
+
+</body>
+</html>
