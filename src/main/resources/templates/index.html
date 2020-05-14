@@ -39,21 +39,19 @@
 		<div class="hero-text-box">
 			<h1>Upload config.json and download the encrypted file&hellip;</h1>
 			<div class="form-container">
-				<form method="post" action="encrypt/file" class="file-upload-form"
-					enctype="multipart/form-data">
+				<form method="post" action="encrypt/jsonFile"
+					class="file-upload-form" enctype="multipart/form-data">
 					<div class="file-row row">
-						<div class="row text-left">
-							<div class="col input-group">
-								<label class="input-group-btn"> <span
-									class="btn btn-primary"> Browse&hellip; <input
-										type="file" name="file" accept=".json" id="customFile"
-										style="display: none;" />
-								</span>
-								</label> <input type="text" class="form-control" id="customFileHolder"
-									readonly />
-								<div class="submit-button">
-									<input type="submit" value="Encrypt" class="btn btn-danger">
-								</div>
+						<div class="col input-group">
+							<label class="input-group-btn"> <span
+								class="btn btn-primary"> Browse&hellip; <input
+									type="file" name="file" accept=".json" id="customFile"
+									style="display: none;" />
+							</span>
+							</label> <input type="text" class="form-control" id="customFileHolder"
+								readonly />
+							<div class="submit-button">
+								<input type="submit" value="Encrypt" class="btn btn-danger">
 							</div>
 						</div>
 					</div>

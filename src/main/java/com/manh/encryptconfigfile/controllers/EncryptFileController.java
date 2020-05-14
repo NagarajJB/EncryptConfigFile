@@ -28,7 +28,7 @@ public class EncryptFileController {
 	@Autowired
 	private TripleDESUtil tripleDESUtil;
 
-	@PostMapping("/file")
+	@PostMapping("/jsonFile")
 	public void encryptFileAndDownload(Model model, @RequestParam("file") MultipartFile file,
 			HttpServletResponse response) throws IOException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
